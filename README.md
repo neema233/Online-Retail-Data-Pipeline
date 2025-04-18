@@ -4,6 +4,7 @@
 
 This project builds an end-to-end **ELT data pipeline** to process and analyze an online retail dataset. The dataset contains transactions from a UK-based online retailer between **December 2010 and December 2011**. The goal is to ingest, transform, and model the data to support business intelligence use cases like customer analysis and sales reporting.
 
+![pipeline](https://github.com/neema233/Online-Retail-Data-Pipeline/blob/master/pipline.png)
 ---
 ### 🔗 Data Source
 
