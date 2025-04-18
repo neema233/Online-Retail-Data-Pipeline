@@ -165,7 +165,7 @@ To run this project, follow these steps:
   ```bash
     dbt run
 ```
-  6. Make dashboard on Powerbi
+  6.Make dashboard on Powerbi
 
 ## 📚 Technologies Used
 **Airflow** -orchestration.
