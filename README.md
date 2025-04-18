@@ -4,7 +4,6 @@
 
 This project builds an end-to-end **ELT data pipeline** to process and analyze an online retail dataset. The dataset contains transactions from a UK-based online retailer between **December 2010 and December 2011**. The goal is to ingest, transform, and model the data to support business intelligence use cases like customer analysis and sales reporting.
 
-![pipeline](https://github.com/neema233/Online-Retail-Data-Pipeline/blob/master/pipline.png)
 ---
 ### 🔗 Data Source
 
@@ -41,21 +40,21 @@ The entire project is developed using **AWS Cloud** services and **Infrastructur
 
 ### Method: **Batch ingestion**
 
-- The data source is a **CSV file** (`online_retail.csv`) containing online retail transactions between 2010 and 2011.
-- The CSV is stored in **Amazon S3** as the raw data layer (data lake).
-- Using **Redshift’s COPY command**, the data is loaded from S3 into a raw table in **Amazon Redshift**.
-- In **dbt**, a `staging/` folder contains models to clean and standardize the raw data (fixing values, renaming columns).
-- Cleaned models are then further transformed in the `marts/` folder to build final **fact** and **dimension** tables using a **star schema**.
+The data source is a **CSV file** (`online_retail.csv`) containing online retail transactions between 2010 and 2011.
 
-### Workflow Orchestration
+**Apache Airflow** orchestrates the batch ingestion pipeline:
 
-- **dbt Cloud** (connected to Amazon Redshift) is used to fully orchestrate the data transformation pipeline.
-- A scheduled **dbt job** is deployed in dbt Cloud to run the pipeline **every 12 hours**, ensuring the data is always up to date.
-- The job runs the following steps:
-  1. Clean raw data into staging tables (`models/staging/`)
-  2. Transform cleaned data into dimensional and fact tables (`models/marts/`)
-- Models are built in the correct dependency order using dbt’s `ref()` function, creating a clear and maintainable DAG.
-- This setup ensures **automated, production-ready orchestration** of the full data workflow with no manual steps.
+- A DAG is scheduled to run daily.
+- The DAG performs the following steps:
+  1. Reads the CSV file.
+  2. Uploads the file to a designated **Amazon S3** bucket (raw data layer).
+  3. Executes a **Redshift `COPY` command** to load the data from S3 into a raw table in **Amazon Redshift**.
+
+Then **dbt Cloud** handles the transformation layer:
+  - A scheduled **dbt job** runs transformations regularly.
+  - The job executes models in dependency order using dbt’s `ref()` function, ensuring a clean and maintainable DAG structure.
+  - The final output is a curated dataset in Redshift, ready for analysis or BI tools.
+
 
 ## 🏢 Data Warehouse: Amazon Redshift
 
@@ -135,6 +134,7 @@ To run this project, follow these steps:
 - ✅ An [**AWS account**](https://signin.aws.amazon.com/signup?request_type=register)
 - ✅ A [**dbt Cloud account**](https://www.getdbt.com/product/dbt-cloud)
 - ✅ [**Terraform installed**](https://developer.hashicorp.com/terraform/install)
+- ✅ [**docker desktop**](https://www.docker.com/)
 
 2- Navigate to the terraform/ folder where main.tf is located and then apply:
 
@@ -142,7 +142,9 @@ To run this project, follow these steps:
   
   ```terraform apply```
 
-3- Deploy in dbt cloud
+3- Go to airflow/ folder taking all files and run `docker-compose up --build airflow-init` then `docker-compose up -d`
+
+4- Deploy in dbt cloud
   1. Initiate New project and conncet it to redshift cluster then connect your GitHub repository.
   
   2.Add `packages.yml` and `dbt_project.yml`
@@ -165,7 +167,9 @@ To run this project, follow these steps:
   6. Make dashboard on Powerbi
 
 ## 📚 Technologies Used
-**Amazon S3** – data lake
+**Airflow** -orchestration.
+
+**Amazon S3** – data lake.
 
 **Amazon Redshift** – data warehouse.
 
