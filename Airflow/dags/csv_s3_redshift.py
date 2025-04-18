@@ -6,7 +6,7 @@ import os
 
 with DAG (
     dag_id='upload_csv_to_s3_and_load_to_redshift',
-    schedule_interval=None,
+    schedule_interval='@daily',
     start_date=days_ago(1),
     catchup=False
 ) as dag:
